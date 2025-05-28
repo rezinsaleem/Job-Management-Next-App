@@ -1,33 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
 import { useState, useRef, useEffect } from "react";
 import { Search, MapPin, ChevronDown } from "lucide-react";
-import Image from "next/image";
 import LogoSvg from "../../public/Vector.svg";
-import { JobFilters, JobFilterProps } from "../interface/job";
+import Image from "next/image";
+import { JobFilters } from "../interface/job";
+import { JobFilterProps } from "../interface/job";
 
-const locationOptions = ["Chennai", "Banglore", "Hyderabad", "Noida", "Remote"];
-const jobTypeOptions = ["Full-time", "Part-time", "Contract", "Internship"];
+
+const locationOptions = [
+  "Remote",
+  "Bangalore",
+  "Mumbai",
+  "Delhi",
+  "Chennai"
+];
+
+const jobTypeOptions = [
+  "Full Time",
+  "Part Time",
+  "Internship",
+  "Contract"
+];
 
 export default function FilterSearch({ onFilterChange }: JobFilterProps) {
-  
+  // State for form inputs
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("Preferred Location");
   const [jobType, setJobType] = useState("Job type");
   const [salary, setSalary] = useState<[number, number]>([20, 80]);
 
- 
+  // Dropdown states
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [jobTypeDropdownOpen, setJobTypeDropdownOpen] = useState(false);
 
-  
+  // Refs for range slider
   const rangeRef = useRef<HTMLDivElement | null>(null);
   const rangeTrackRef = useRef<HTMLDivElement | null>(null);
 
- 
+  // For debouncing filter changes
   const filterDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-
+  // Track initial filter values to compare against
   const initialFilters = useRef<JobFilters>({
     searchQuery: "",
     location: null,
@@ -35,6 +48,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
     salary: [0, 100],
   });
 
+  // Compare current filters with initial filters
   const areFiltersInitial = () => {
     return (
       searchQuery === initialFilters.current.searchQuery &&
@@ -49,10 +63,11 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
     );
   };
 
+  // Send filter updates to parent component with debounce
   const updateFilters = () => {
     if (areFiltersInitial()) {
       console.log("Skipping updateFilters: Filters are initial");
-      return; 
+      return; // Skip if filters haven't changed from initial values
     }
 
     if (filterDebounceRef.current) {
@@ -75,6 +90,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
     }, 500);
   };
 
+  // Update filters only when inputs change
   useEffect(() => {
     updateFilters();
     return () => {
@@ -94,9 +110,10 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
 
     const minVal = salary[0];
     const maxVal = salary[1];
-    const range = 100; 
+    const range = 100; // Range from 0 to 100 (representing 0k to 100k)
     const newValue = Math.round((position / 100) * range);
 
+    // Ensure min doesn't exceed max and vice versa
     if (isMin) {
       setSalary([Math.min(newValue, maxVal - 5), maxVal]);
     } else {
@@ -104,6 +121,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
     }
   };
 
+  // Mouse move and up event handlers for dragging
   const handleMouseMove = (isMin: boolean, event: MouseEvent) => {
     handleRangeChange(isMin, event);
   };
@@ -130,6 +148,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
       document.addEventListener("mouseup", handleMouseUp);
     };
 
+  // Update range track position
   useEffect(() => {
     if (rangeTrackRef.current) {
       const minPercent = ((salary[0] - 0) / (100 - 0)) * 100;
@@ -140,6 +159,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
     }
   }, [salary]);
 
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -171,18 +191,18 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
   }, [locationDropdownOpen, jobTypeDropdownOpen]);
 
   return (
-    <div className="w-full bg-white rounded-lg px-3 py-3">
+  <div className="w-full bg-white shadow-[0px_6px_8px_0px_rgba(0.05,0.05,0.05,0.05)] px-3 py-3">
       <div className="flex flex-col md:flex-row items-center gap-3">
         {/* Search Input */}
-        <div className="relative w-full">
+        <div className="relative w-full ml-5">
           <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 text-[#686868] transform -translate-y-1/2 text-"
             size={18}
           />
           <input
             type="text"
             placeholder="Search By Job Title, Role"
-            className="w-full pl-10 pr-4 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-700 text-sm"
+            className="w-full pl-10 pr-4 py-4 border-r-2 border-gray-300 focus:outline-none  placeholder-[#686868] text-[#686868] text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -191,24 +211,24 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
         {/* Location Dropdown */}
         <div className="relative w-full" id="location-dropdown">
           <div
-            className="flex items-center w-full px-4 py-4 border border-gray-300 rounded-md cursor-pointer"
+            className="flex items-center w-full px-4 py-4 border-r-2 border-gray-300 cursor-pointer "
             onClick={(e) => {
               e.stopPropagation();
               setLocationDropdownOpen(!locationDropdownOpen);
               setJobTypeDropdownOpen(false);
             }}
           >
-            <MapPin size={18} className="text-gray-400 mr-2" />
+            <MapPin size={18} className="text-[#686868] mr-2" />
             <span
               className={`flex-1 text-sm ${
                 location === "Preferred Location"
-                  ? "text-gray-400"
-                  : "text-gray-700"
+                  ? "text-[#686868]"
+                  : "text-[#686868]"
               }`}
             >
               {location}
             </span>
-            <ChevronDown size={18} className="text-gray-400" />
+            <ChevronDown size={18} className="text-[#686868]" />
           </div>
 
           {locationDropdownOpen && (
@@ -232,7 +252,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
         {/* Job Type Dropdown */}
         <div className="relative w-full" id="jobtype-dropdown">
           <div
-            className="flex items-center w-full px-4 py-4 border border-gray-300 rounded-md cursor-pointer"
+            className="flex items-center w-full px-4 py-4 border-r-2 border-gray-300 cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               setJobTypeDropdownOpen(!jobTypeDropdownOpen);
@@ -242,16 +262,16 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
             <Image
               src={LogoSvg}
               alt="Logo"
-              className="w-4 h-4 text-gray-400 mr-2"
+              className="w-4 h-4 text-[#686868] mr-2"
             />
             <span
               className={`flex-1 text-sm ${
-                jobType === "Job type" ? "text-gray-400" : "text-gray-700"
+                jobType === "Job type" ? "text-[#686868]" : "text-[#686868]"
               }`}
             >
               {jobType}
             </span>
-            <ChevronDown size={18} className="text-gray-400" />
+            <ChevronDown size={18} className="text-[#686868]" />
           </div>
 
           {jobTypeDropdownOpen && (
@@ -273,23 +293,22 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
         </div>
 
         {/* Salary Range Slider */}
-        <div className="w-full px-2 py-2">
-          <div className="text-xs font-medium text-black mb-1">
-            Salary Per Month
-          </div>
-          <div className="flex items-center justify-center mb-2">
-            <span className="text-xs font-bold text-black">
+        <div className="w-full px-2 py-2 mb-4 mr-6">
+          <div className="flex items-center justify-between text-xs font-medium text-black mb-5">
+            <span className="font-medium text-[16px]">Salary Per Month</span>
+            <span className="font-medium text-[15px]">
               ₹{salary[0]}k - ₹{salary[1]}k
             </span>
           </div>
+
           <div
-            className="relative h-1 bg-gray-200 rounded-full cursor-pointer"
+            className="w-[85%] ml-4 relative h-0.5 bg-gray-200 rounded-full cursor-pointer"
             ref={rangeRef}
           >
             {/* Active Range Track */}
             <div
               ref={rangeTrackRef}
-              className="absolute top-0 h-1 bg-black rounded-full"
+              className="absolute top-0 h-0.5 bg-black rounded-full"
             />
 
             {/* Min Thumb */}
@@ -298,7 +317,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
               style={{ left: `${((salary[0] - 0) / (100 - 0)) * 100}%` }}
               onMouseDown={startDrag(true)}
             >
-              <div className="w-5 h-5 bg-white border-2 border-black rounded-full cursor-grab shadow-md"></div>
+              <div className="w-4 h-4 bg-white border-5 border-black rounded-full cursor-pointer shadow-md"></div>
             </div>
 
             {/* Max Thumb */}
@@ -307,7 +326,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
               style={{ left: `${((salary[1] - 0) / (100 - 0)) * 100}%` }}
               onMouseDown={startDrag(false)}
             >
-              <div className="w-5 h-5 bg-white border-2 border-black rounded-full cursor-grab shadow-md"></div>
+              <div className="w-4 h-4 bg-white border-5 border-black rounded-full cursor-pointer shadow-md"></div>
             </div>
           </div>
         </div>

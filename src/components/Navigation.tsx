@@ -30,7 +30,7 @@ const Navigation = () => {
   return (
     <div className="bg-white px-4 py-5">
       <nav
-        className={`max-w-[824px] mx-auto bg-white rounded-full shadow-[6px_6px_6px_6px_rgba(0.05,0.05,0.05,0.05)] py-3 px-4 transition-all duration-300 ease-in-out ${
+        className={`max-w-[824px] mx-auto bg-white rounded-full shadow-[3px_3px_3px_3px_rgba(0.05,0.05,0.05,0.05)] py-3 px-4 transition-all duration-300 ease-in-out ${
           isMenuOpen ? 'rounded-none' : 'rounded-full'
         }`}
       >
