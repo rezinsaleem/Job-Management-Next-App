@@ -191,7 +191,7 @@ export default function FilterSearch({ onFilterChange }: JobFilterProps) {
   }, [locationDropdownOpen, jobTypeDropdownOpen]);
 
   return (
-  <div className="w-full bg-white shadow-[0px_6px_8px_0px_rgba(0.05,0.05,0.05,0.05)] px-3 py-3">
+  <div className="w-full bg-white shadow-[0px_6px_8px_0px_rgba(0.10,0.10,0.10,0.10)] px-3 py-3">
       <div className="flex flex-col md:flex-row items-center gap-3">
         {/* Search Input */}
         <div className="relative w-full ml-5">

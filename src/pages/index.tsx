@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import FilterSearch from "@/components/FilterSearch";
-import Navigation from "@/components/Navigation";
+import Navbar from "@/components/Navbar";
 import { JobFilters } from "@/interface/job";
 import { useCallback, useState } from "react";
 import { isEqual } from "lodash";
+import JobListing from "@/components/JobListing";
 
 
 export default function Home() {
-  const [filters, setFilters] = useState<JobFilters>({
+  const [, setFilters] = useState<JobFilters>({
     searchQuery: "",
     location: null,
     jobType: null,
@@ -25,9 +26,10 @@ export default function Home() {
     });
   }, []);
   return (
-    <div className="min-h-screen bg-[#fbfbff]">
-      <Navigation />
+    <div className="min-h-screen bg-[#FBFBFF]">
+      <Navbar />
       <FilterSearch onFilterChange={handleFilterChange} />
+      <JobListing />
     </div>
   );
 }

@@ -26,7 +26,7 @@ export type FormData = {
   applicationDeadline: Date | null;
   jobDescription: string;
 };
-export type JobOpeningFormProps = {
+export type JobFormProps = {
   closeForm: () => void;
 };
 

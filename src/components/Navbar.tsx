@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
+import JobForm from './JobForm';
 
-const Navigation = () => {
+const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -126,15 +127,18 @@ const Navigation = () => {
       </nav>
 
       {isFormOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center h-screen overflow-y-auto">
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-md"
+            className="fixed inset-0 bg-black opacity-40"
             onClick={closeForm}
           ></div>
+           <div className="relative z-10">
+            <JobForm closeForm={closeForm} />
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default Navigation;
+export default Navbar;
