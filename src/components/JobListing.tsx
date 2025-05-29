@@ -1,8 +1,8 @@
+'use client';
 
-import { useState, useEffect } from "react";
-import { JobCard } from "./JobCard";
-import { Job } from "@/interface/job";
-import axios from "axios";
+import { useState, useEffect } from 'react';
+import { JobCard } from './JobCard';
+import axios from 'axios';
 
 interface JobFilters {
   searchQuery: string;
@@ -11,34 +11,36 @@ interface JobFilters {
   salary: [number, number];
 }
 
-const backendUrl = 'https://job-management-nest-server.onrender.com'
+const backendUrl = 'https://job-management-nest-server.onrender.com';
 
 export default function JobListing({ filters = {} as JobFilters }) {
-    const [job, setJob] = useState([])
-    const [loading, setLoading] = useState(false);
-    const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [job, setJob] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
-      setLoading(true);
       try {
         const queryParams = new URLSearchParams();
+        console.log('Filters:', filters);
+        console.log('Query String:', queryParams.toString());
 
-        if (filters.searchQuery) queryParams.append('searchQuery', filters.searchQuery);
+        if (filters.searchQuery)
+          queryParams.append('searchQuery', filters.searchQuery);
         if (filters.location) queryParams.append('location', filters.location);
         if (filters.jobType) queryParams.append('jobType', filters.jobType);
         if (filters.salary) {
           queryParams.append('minSalary', String(filters.salary[0]));
           queryParams.append('maxSalary', String(filters.salary[1]));
         }
-        console.log(...queryParams,"fasfs");
-        const response = await axios.get(`${backendUrl}/jobs?${queryParams.toString()}`);
+        const response = await axios.get(
+          `${backendUrl}/jobs?${queryParams.toString()}`
+        );
+        console.log(response.data)
         setJob(response.data);
       } catch (error) {
         console.error('Failed to fetch jobs:', error);
       } finally {
         setLoading(false);
-        setIsInitialLoad(false);
       }
     };
 
@@ -48,7 +50,7 @@ export default function JobListing({ filters = {} as JobFilters }) {
   return (
     <div className="min-h-screen p-4 mt-5">
       <div className="container mx-auto">
-        {loading && !isInitialLoad && (
+        {loading && (
           <div className="text-center py-2 mb-4">
             <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg">
               <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500 mr-2"></div>
@@ -78,9 +80,9 @@ export default function JobListing({ filters = {} as JobFilters }) {
             </p>
           </div>
         ) : (
-          <div className="grid mx-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {job.map((job:Job) => (
-              <JobCard key={job.id} job={job} />
+          <div className="grid grid-cols-1 mx-5 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {job.map((job) => (
+              <JobCard key={job} job={job} />
             ))}
           </div>
         )}
