@@ -24,7 +24,7 @@ type JobFormProps = {
   closeForm: () => void
 }
 
-const backendUrl = "https://job-management-nest-server.onrender.com"
+const backendUrl = "https://job-management-nest-server.onrender.com/jobs"
 const locationOptions = ['Remote', 'Banglore', 'Hyderabad', 'Chennai', 'Kochi'];
 const jobTypeOptions = ['Full-time', 'Part-time', 'Internship', 'Remote'];
 const convertJobType = (type: string) => type.toUpperCase()
