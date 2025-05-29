@@ -54,10 +54,10 @@ export function JobCard({ job }: { job: Job }) {
           <div className="bg-gradient-to-t from-[#f1f1f1] to-white p-3 border-2 border-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
             <div className="rounded-full w-12 h-12 flex items-center justify-center">
                 <Image
-                  src="/nick.png"
+                  src="/logo1.jpg"
                   alt="Amazon Logo"
-                  width={30}
-                  height={30}
+                  width={35}
+                  height={35}
                   className="object-contain"
                 />
               </div>
