@@ -1,6 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useCallback, useEffect, useRef } from "react";
+
+import { useState, useEffect } from "react";
 import { JobCard } from "./JobCard";
+import { Job } from "@/interface/job";
+import axios from "axios";
 
 interface JobFilters {
   searchQuery: string;
@@ -9,65 +11,51 @@ interface JobFilters {
   salary: [number, number];
 }
 
-const backendUrl = 'http://localhost:3000/'
+const backendUrl = 'https://job-management-nest-server.onrender.com'
 
-export default function JobListing() {
-    const [job, setJob] = useState([
-  {
-    id: 1,
-    title: "Frontend Developer",
-    company_name: "TechNova Inc.",
-    location: "Bengaluru, India",
-    job_type: "Full-Time",
-    salary_range: "₹8k - ₹12k",
-    description: "Build and maintain user-facing features using React and TypeScript.",
-    application_deadline: "2025-07-15",
-    created_at: "2025-06-20T10:00:00Z",
-    updated_at: "2025-06-25T14:30:00Z"
-  },
-  {
-    id: 2,
-    title: "Backend Engineer",
-    company_name: "CloudSync Solutions",
-    location: "Remote",
-    job_type: "Part-Time",
-    salary_range: "₹10k - ₹15k",
-    description: "Develop scalable APIs using Node.js and MongoDB.",
-    application_deadline: "2025-08-01",
-    created_at: "2025-06-22T09:45:00Z",
-    updated_at: "2025-06-26T12:15:00Z"
-  },
-  {
-    id: 3,
-    title: "UI/UX Designer",
-    company_name: "Designify Studio",
-    location: "Mumbai, India",
-    job_type: "Contract",
-    salary_range: "₹5k - ₹9k",
-    description: "Design intuitive and visually appealing user interfaces.",
-    application_deadline: "2025-07-10",
-    created_at: "2025-06-21T13:20:00Z",
-    updated_at: "2025-06-24T16:00:00Z"
-  },
-  {
-    id: 4,
-    title: "DevOps Engineer",
-    company_name: "Infrasys Tech",
-    location: "Hyderabad, India",
-    job_type: "Full-Time",
-    salary_range: "₹12k - ₹18k",
-    description: "Automate infrastructure and CI/CD pipelines using AWS and Docker.",
-    application_deadline: "2025-07-20",
-    created_at: "2025-06-23T11:10:00Z",
-    updated_at: "2025-06-27T09:40:00Z"
-  }
-])
+export default function JobListing({ filters = {} as JobFilters }) {
+    const [job, setJob] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
+  useEffect(() => {
+    const fetchJobs = async () => {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams();
+
+        if (filters.searchQuery) queryParams.append('searchQuery', filters.searchQuery);
+        if (filters.location) queryParams.append('location', filters.location);
+        if (filters.jobType) queryParams.append('jobType', filters.jobType);
+        if (filters.salary) {
+          queryParams.append('minSalary', String(filters.salary[0]));
+          queryParams.append('maxSalary', String(filters.salary[1]));
+        }
+        console.log(...queryParams,"fasfs");
+        const response = await axios.get(`${backendUrl}/jobs?${queryParams.toString()}`);
+        setJob(response.data);
+      } catch (error) {
+        console.error('Failed to fetch jobs:', error);
+      } finally {
+        setLoading(false);
+        setIsInitialLoad(false);
+      }
+    };
+
+    fetchJobs();
+  }, [filters]);
 
   return (
     <div className="min-h-screen p-4 mt-5">
       <div className="container mx-auto">
-       
+        {loading && !isInitialLoad && (
+          <div className="text-center py-2 mb-4">
+            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg">
+              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500 mr-2"></div>
+              Updating results...
+            </div>
+          </div>
+        )}
 
         {job.length === 0 ? (
           <div className="text-center py-10">
@@ -90,12 +78,10 @@ export default function JobListing() {
             </p>
           </div>
         ) : (
-          <div className="px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {job.map((job) => (
+          <div className="grid mx-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {job.map((job:Job) => (
               <JobCard key={job.id} job={job} />
             ))}
-          </div>
           </div>
         )}
       </div>

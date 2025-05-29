@@ -8,7 +8,7 @@ import JobListing from "@/components/JobListing";
 
 
 export default function Home() {
-  const [, setFilters] = useState<JobFilters>({
+  const [filter, setFilters] = useState<JobFilters>({
     searchQuery: "",
     location: null,
     jobType: null,
@@ -29,7 +29,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#FBFBFF]">
       <Navbar />
       <FilterSearch onFilterChange={handleFilterChange} />
-      <JobListing />
+      <JobListing filters={filter} />
     </div>
   );
 }

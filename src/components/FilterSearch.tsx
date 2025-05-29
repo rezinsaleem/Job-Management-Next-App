@@ -7,20 +7,8 @@ import { JobFilters } from "../interface/job";
 import { JobFilterProps } from "../interface/job";
 
 
-const locationOptions = [
-  "Remote",
-  "Bangalore",
-  "Mumbai",
-  "Delhi",
-  "Chennai"
-];
-
-const jobTypeOptions = [
-  "Full Time",
-  "Part Time",
-  "Internship",
-  "Contract"
-];
+const locationOptions = ['Remote', 'Banglore', 'Hyderabad', 'Chennai', 'Kochi'];
+const jobTypeOptions = ['Full-time', 'Part-time', 'Internship', 'Remote'];
 
 export default function FilterSearch({ onFilterChange }: JobFilterProps) {
   // State for form inputs

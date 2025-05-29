@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -7,7 +8,7 @@ import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { ChevronDown, ChevronsRight, ChevronsDown, Calendar, ArrowUpDown } from "lucide-react"
 import { toast } from "react-toastify"
-
+import axios from "axios"
 interface FormData {
   jobTitle: string
   companyName: string
@@ -23,9 +24,9 @@ type JobFormProps = {
   closeForm: () => void
 }
 
-const backendUrl = "http://localhost:3000"
-const locationOptions = ["Remote", "Banglore", "Hyderabad", "Chennai", "Kochi"]
-const jobTypeOptions = ["Full-time", "Part-time", "Internship"]
+const backendUrl = "https://job-management-nest-server.onrender.com"
+const locationOptions = ['Remote', 'Banglore', 'Hyderabad', 'Chennai', 'Kochi'];
+const jobTypeOptions = ['Full-time', 'Part-time', 'Internship', 'Remote'];
 const convertJobType = (type: string) => type.toUpperCase()
 
 const JobForm: React.FC<JobFormProps> = ({ closeForm }) => {
@@ -87,7 +88,7 @@ const JobForm: React.FC<JobFormProps> = ({ closeForm }) => {
     setTimeout(() => setSaved(false), 2000)
   }
 
-  const onSubmit = async (data: FormData) => {
+   const onSubmit = async (data: FormData) => {
     const transformedData = {
       title: data.jobTitle,
       company_name: data.companyName,
@@ -96,30 +97,26 @@ const JobForm: React.FC<JobFormProps> = ({ closeForm }) => {
       salary_range: Number(data.maxSalary),
       description: data.jobDescription,
       application_deadline: data.applicationDeadline,
-    }
+    };
 
     try {
-      const response = await fetch(`${backendUrl}/create-job`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(transformedData),
-      })
+      const response = await axios.post(backendUrl, transformedData);
 
-      const result = await response.json()
-
+      const result = response.data;
+      console.log(result);
       if (result.success) {
-        reset()
-        toast.success("Job created successfully!")
-        localStorage.removeItem("jobDraft")
-        closeForm()
+        reset();
+        toast.success("Job created successfully!");
+        localStorage.removeItem("jobDraft");
+        closeForm();
       } else {
-        throw new Error("Failed to create job")
+        throw new Error("Failed to create job");
       }
     } catch (err) {
-      console.error(err)
-      toast.error("Failed to create job.")
+      console.log(err);
+      toast.error("Failed to create job.");
     }
-  }
+  };
 
   return (
     <div className="flex justify-center items-center h-[1000px] p-4">
